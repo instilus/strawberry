@@ -55,13 +55,13 @@ if TYPE_CHECKING:
 
 class NodeExtension(FieldExtension):
     def apply(self, field: StrawberryField) -> None:
-        assert field.base_resolver is None
-
         if isinstance(field.type, StrawberryList):
             resolver = self.get_node_list_resolver(field)
         else:
             resolver = self.get_node_resolver(field)
 
+        if field.base_resolver is not None:
+            print(f'overriding existing base resolver {field.base_resolver}; this likely indicates a bug')
         field.base_resolver = StrawberryResolver(resolver, type_override=field.type)
 
     def resolve(
